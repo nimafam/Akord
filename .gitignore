@@ -36,3 +36,36 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+
+# Environment
+.env.*
+!.env.example
+!.env.*.example
+
+# Package managers
+.pnpm-store/
+.npm/
+*.log
+
+# TypeScript
+*.tsbuildinfo
+
+# Runtime / Temporary
+tmp/
+temp/
+*.zip
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Prisma local databases
+*.db
+*.db-journal
+
+# Local uploads
+uploads/
+**/uploads/

@@ -1,159 +1,137 @@
-# Turborepo starter
+# AKORD
 
-This Turborepo starter is maintained by the Turborepo core team.
+AKORD is an immersive brand and business experience built as a TypeScript monorepo. The website combines a cinematic, scroll-led Experience Engine with independent case-study pages, while the CMS API provides content, media, authentication, and administration capabilities for future data-driven publishing.
 
-## Using this example
+## Repository structure
 
-Run the following command:
-
-```sh
-npx create-turbo@latest
+```text
+apps/
+  web/    Next.js website and Experience Engine
+  api/    NestJS CMS API with Prisma
+docs/     Product vision and Experience Engine handoff notes
+packages/ Shared repository configuration
 ```
 
-## What's inside?
+The website currently reads its selected-work content from local assets so it can run independently. The API and PostgreSQL services are available for CMS development and later integration.
 
-This Turborepo includes the following packages/apps:
+## Technology
 
-### Apps and Packages
+- Next.js 16, React 19, TypeScript
+- GSAP, Motion, Lenis, React Three Fiber and Three.js
+- NestJS 11, Prisma and PostgreSQL 16
+- pnpm workspaces and Turborepo
+- Docker Compose for the complete local stack
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## Requirements
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- Node.js 20 or newer
+- pnpm 9
+- Docker Desktop (optional, for the containerized stack)
 
-### Utilities
+## Local development
 
-This Turborepo has some additional tools already setup for you:
+Install workspace dependencies from the repository root:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+corepack enable
+pnpm install
 ```
 
-Without global `turbo`, use your package manager:
+Start all workspace applications:
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm dev
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Or run an application independently:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```bash
+pnpm --dir apps/web dev
+pnpm --dir apps/api start:dev
 ```
 
-Without global `turbo`:
+Default local addresses:
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+- Website: `http://localhost:3000`
+- API: `http://localhost:3001`
+- API documentation: `http://localhost:3001/api/docs`
+- API health check: `http://localhost:3001/health`
+
+The website does not require the API for its current local-data experience.
+
+## Environment configuration
+
+Never commit real credentials. The repository tracks example files only.
+
+For the full Docker stack:
+
+```bash
+cp .env.example .env
 ```
 
-### Develop
+Replace every `CHANGE_ME` and `REPLACE_WITH_...` value before starting the services.
 
-To develop all apps and packages, run the following command:
+For API-only development:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+```bash
+cp apps/api/.env.example apps/api/.env
 ```
 
-Without global `turbo`, use your package manager:
+The API environment includes the database connection, optional initial owner details, and independent access/refresh token secrets. The web application currently has no required environment variables.
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
+## Docker
+
+The Compose configuration starts three services:
+
+- `akord-web` on port `3000`
+- `akord-api` on port `3001`
+- `akord-postgres` on host port `5433`
+
+After creating the root `.env` file, run:
+
+```bash
+pnpm docker:up
+pnpm docker:logs
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Stop the stack without deleting database or upload volumes:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
+```bash
+pnpm docker:down
 ```
 
-Without global `turbo`:
+To remove persisted Docker data as well, explicitly run `docker compose down --volumes`.
 
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+Database migrations are applied automatically when the API container starts. Creating the initial CMS owner remains an explicit action:
+
+```bash
+docker compose exec api ./node_modules/.bin/prisma db seed
 ```
 
-### Remote Caching
+## Quality checks
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Run these before opening a pull request:
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
+```bash
+pnpm check-types
+pnpm lint
+pnpm build
 ```
 
-Without global `turbo`, use your package manager:
+Motion-related changes also require browser validation with slow and fast wheel input, interrupted scrolling, reverse scrolling, and repeated direction changes. See [`apps/web/AGENTS.md`](apps/web/AGENTS.md) and the documents in [`docs/`](docs/) for the Experience Engine rules.
 
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
+## Git hygiene
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+- Local `.env` files, generated output, caches, logs, uploads, archives, and TypeScript build metadata are ignored.
+- Commit `.env.example` files whenever a required environment key changes.
+- Do not commit generated `.next`, `dist`, `node_modules`, database volumes, or uploaded CMS media.
+- Keep project artwork under `apps/web/public/work/` when it is intentionally part of the portfolio.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## Brand
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+- Display name: **AKORD**
+- Primary color: `#01362E`
+- Accent color: `#BB987D`
+- Title typeface: Kento
+- Body typeface: Ubuntu
 
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)

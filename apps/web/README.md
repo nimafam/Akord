@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# AKORD Web
 
-## Getting Started
+The public AKORD website and immersive Experience Engine, built with Next.js, React, TypeScript, and a motion stack based on GSAP, Motion, Lenis, and Three.js.
 
-First, run the development server:
+## Run locally
+
+From this directory:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The current website uses local project data and assets under `public/work/`; it does not require the CMS API to render.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+## Commands
 
-## Learn More
+```bash
+pnpm dev          # development server
+pnpm build        # optimized production build
+pnpm start        # serve a production build
+pnpm lint         # ESLint validation
+pnpm check-types  # TypeScript validation
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Main routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/` — immersive AKORD experience
+- `/work` — all selected projects
+- `/contact` — project inquiry
+- `/privacy` and `/terms` — policy placeholders
+- `/styleguide` — internal implementation reference
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Configuration
 
-## Deploy on Vercel
+The application currently has no required environment variables. `next.config.ts` enables the standalone output used by the production Docker image.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Before changing the Experience Engine, read `AGENTS.md`, `../../docs/AKORD-PROJECT-VISION.md`, and `../../docs/AKORD-EXPERIENCE-HANDOFF.md`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
