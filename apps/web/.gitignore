@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Source brand documents are kept locally and are not required at runtime.
+/public/work/taliapharmed-branding/brand-book/*.pdf
+/public/work/taliapharmed-branding/brand-guideline/*.pdf
